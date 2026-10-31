@@ -5,6 +5,10 @@ and recovers semantic errors with ISO 21090 ExceptionalValues, giving the same r
 [sdcvalidator](https://github.com/SemanticDataCharter/sdcvalidator), the reference implementation,
 on its conformance suite.
 
+**Conforms to:** sdcvalidator **4.6.2** (all 120 cases of
+[its conformance suite](https://github.com/SemanticDataCharter/sdcvalidator/tree/v4.6.2/conformance)).
+CI runs that release's suite, pinned by tag.
+
 It runs in Node (20 or later), Deno (including Supabase Edge Functions) and browsers. You supply the
 model and record text, so it reads no files and makes no network requests.
 
@@ -26,7 +30,7 @@ const recovered = validator.recover(recordXml);
 
 ## What "the same results" means
 
-The [conformance suite](https://github.com/SemanticDataCharter/sdcvalidator/tree/dev/conformance)
+The [conformance suite](https://github.com/SemanticDataCharter/sdcvalidator/tree/v4.6.2/conformance)
 compares, for every case:
 - the verdict;
 - structural and semantic errors by path;
