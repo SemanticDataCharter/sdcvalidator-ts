@@ -28,6 +28,28 @@ const recovered = validator.recover(recordXml);
 // Throws StructuralValidationError if the record has structural errors.
 ```
 
+## MCP server
+
+The package includes an MCP server, so agents can call it directly. It speaks JSON-RPC 2.0 over stdio and runs on Node; it reads the files you name.
+
+```bash
+npx sdcvalidator-ts mcp
+```
+
+| Tool | What it does |
+|---|---|
+| `validate_instance` | Pass or fail, with error counts |
+| `validate_and_report` | Every error: path, tier, the constraint that failed, the ExceptionalValue code |
+| `recover_instance` | The recovered record and each value covered; a structural error rejects it |
+| `check_schema_compliance` | Whether a schema follows SDC4 principles: restriction, never extension |
+
+Each tool takes `schema_path` and `instance_path` (except the compliance check, which takes only the
+schema), plus an optional `reference_path`. The model's `xsd:include` of the reference model is
+fetched from its URL once and cached. With `reference_path`, it is read from that local copy instead,
+so the server works offline.
+
+It is registered in the MCP registry as `io.github.SemanticDataCharter/sdcvalidator-ts`.
+
 ## What "the same results" means
 
 The [conformance suite](https://github.com/SemanticDataCharter/sdcvalidator/tree/v4.6.3/conformance)
