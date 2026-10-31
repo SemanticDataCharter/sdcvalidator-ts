@@ -1,0 +1,49 @@
+{
+  "name": "sdcvalidator-ts",
+  "version": "4.0.0",
+  "description": "SDC4 validation in TypeScript: validates Governed Data Records against their published SDC4 models, with ExceptionalValue recovery. Conforms to sdcvalidator's conformance suite.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "tsx --test test/*.test.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SemanticDataCharter/sdcvalidator-ts"
+  },
+  "keywords": [
+    "sdc4",
+    "semantic-data-charter",
+    "xsd",
+    "validation",
+    "governed-data-record"
+  ],
+  "dependencies": {
+    "@xmldom/xmldom": "0.9.12",
+    "fontoxpath": "3.34.0"
+  },
+  "devDependencies": {
+    "@types/node": "24.9.1",
+    "tsx": "4.20.6",
+    "typescript": "5.9.3"
+  }
+}
