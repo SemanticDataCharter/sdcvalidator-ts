@@ -11,7 +11,7 @@ env:
   # The conformance suite of the sdcvalidator release this library conforms to (conformance/ in that
   # repository). Pinned to a release tag so the reference is fixed and published; moving to a newer
   # release is a deliberate change, made with the CHANGELOG and README.
-  SUITE_REF: v4.6.2
+  SUITE_REF: v4.6.3
 
 jobs:
   test:

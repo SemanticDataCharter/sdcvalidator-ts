@@ -2,11 +2,10 @@
  * Validate a record against a loaded schema, giving the errors sdcvalidator gives: the same paths,
  * the same tiers, the same ExceptionalValue codes.
  *
- * Errors are classified by the constraint that failed, never by message wording. The mapping to
- * ExceptionalValue codes reproduces sdcvalidator 4.6.2 as its conformance suite records it: a value
- * that is not lexically of its type is INV; every facet, fixed-value and assertion failure is NI.
- * (sdcvalidator's own rule table intends OTH for enumerations and INV for patterns and ranges; when
- * the reference changes, the suite's expectations change and this table follows.)
+ * Errors are classified by the constraint that failed, never by message wording, and mapped to
+ * ExceptionalValue codes as sdcvalidator 4.6.3 maps them: a value outside its enumeration is OTH; a
+ * value not of its type, or one that breaks any other facet, a fixed value or an assertion, is INV;
+ * character data where only elements are allowed is NA; an error on a structural element has no code.
  */
 import fontoxpath from 'fontoxpath';
 import { BUILTINS, compareDecimal, decimalDigits, normalizeWhiteSpace } from './builtins.js';
@@ -42,15 +41,16 @@ export const STRUCTURAL_ELEMENTS = new Set([
   'normal-status', 'magnitude-status', 'accuracy_margin', 'precision_digits',
 ]);
 
-function evFor(kind: ErrorKind, path: string): string | null {
+function evFor(kind: ErrorKind, path: string, constraint?: string): string | null {
   if (kind === 'content' || kind === 'root') return null;
   if (STRUCTURAL_ELEMENTS.has(localOf(path.slice(path.lastIndexOf('/') + 1)))) return null;
-  return kind === 'type' ? 'INV' : 'NI';
+  if (kind === 'text') return 'NA';
+  return constraint === 'enumeration' ? 'OTH' : 'INV';
 }
 
 function error(path: string, kind: ErrorKind, message: string, constraint?: string): SdcError {
   const tier = kind === 'content' || kind === 'root' ? 'structural' : 'semantic';
-  return { path, tier, kind, constraint, ev: evFor(kind, path), message };
+  return { path, tier, kind, constraint, ev: evFor(kind, path, constraint), message };
 }
 
 /** A pending match of a child element to the declaration it satisfies. */

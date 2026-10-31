@@ -5,8 +5,8 @@ and recovers semantic errors with ISO 21090 ExceptionalValues, giving the same r
 [sdcvalidator](https://github.com/SemanticDataCharter/sdcvalidator), the reference implementation,
 on its conformance suite.
 
-**Conforms to:** sdcvalidator **4.6.2** (all 120 cases of
-[its conformance suite](https://github.com/SemanticDataCharter/sdcvalidator/tree/v4.6.2/conformance)).
+**Conforms to:** sdcvalidator **4.6.3** (all 151 cases of
+[its conformance suite](https://github.com/SemanticDataCharter/sdcvalidator/tree/v4.6.3/conformance)).
 CI runs that release's suite, pinned by tag.
 
 It runs in Node (20 or later), Deno (including Supabase Edge Functions) and browsers. You supply the
@@ -30,7 +30,7 @@ const recovered = validator.recover(recordXml);
 
 ## What "the same results" means
 
-The [conformance suite](https://github.com/SemanticDataCharter/sdcvalidator/tree/v4.6.2/conformance)
+The [conformance suite](https://github.com/SemanticDataCharter/sdcvalidator/tree/v4.6.3/conformance)
 compares, for every case:
 - the verdict;
 - structural and semantic errors by path;
@@ -41,9 +41,11 @@ compares, for every case:
 Error messages are not compared. Errors are classified by the constraint that failed, never by
 message wording.
 
-The ExceptionalValue mapping follows the reference as the suite records it today:
-- **`INV`:** a value that is not lexically of its type.
-- **`NI`:** every facet, fixed-value and assertion failure.
+The ExceptionalValue codes are the reference's (sdcvalidator 4.6.3):
+- **`OTH`:** a value outside its enumeration.
+- **`INV`:** a value that is not of its type, or that breaks any other facet (pattern, length, range,
+  digits, a built-in type's own range), a fixed value or an assertion.
+- **`NA`:** character data where only elements are allowed.
 - **No code:** an error on a structural element (`label`, `vtb`, `vte`, ...). It cannot be recovered.
 
 When sdcvalidator's mapping changes, the suite's expectations change, and this library follows before
