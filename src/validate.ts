@@ -3,7 +3,7 @@
  * the same tiers, the same ExceptionalValue codes.
  *
  * Errors are classified by the constraint that failed, never by message wording. The mapping to
- * ExceptionalValue codes reproduces sdcvalidator 4.6.1 as its conformance suite records it: a value
+ * ExceptionalValue codes reproduces sdcvalidator 4.6.2 as its conformance suite records it: a value
  * that is not lexically of its type is INV; every facet, fixed-value and assertion failure is NI.
  * (sdcvalidator's own rule table intends OTH for enumerations and INV for patterns and ranges; when
  * the reference changes, the suite's expectations change and this table follows.)
