@@ -1,0 +1,97 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+env:
+  # The sdcvalidator release this library conforms to; keep in step with test.yml.
+  SUITE_REF: v4.6.3
+
+jobs:
+  # A tag publishes irrevocably, so the conformance suite runs first.
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Check out the conformance suite
+        uses: actions/checkout@v7
+        with:
+          repository: SemanticDataCharter/sdcvalidator
+          ref: ${{ env.SUITE_REF }}
+          path: sdcvalidator
+          sparse-checkout: conformance
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+          cache: npm
+
+      - run: npm ci
+      - run: npm run typecheck
+
+      - name: Conformance suite and MCP server
+        run: npm test
+        env:
+          CONFORMANCE_DIR: ${{ github.workspace }}/sdcvalidator/conformance
+
+      - name: Tag matches the package version
+        run: |
+          pkg=$(node -p "require('./package.json').version")
+          test "v$pkg" = "${GITHUB_REF_NAME}" || { echo "tag ${GITHUB_REF_NAME} != v$pkg"; exit 1; }
+
+  publish-npm:
+    needs: test
+    runs-on: ubuntu-latest
+    environment: npm
+    permissions:
+      id-token: write   # npm provenance (and trusted publishing once configured on npmjs.com)
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+
+      - run: npm ci
+      - run: npm run build
+
+      - name: Publish to npm
+        run: npm publish --provenance --access public
+        env:
+          # A granular token for the first publish; once trusted publishing is configured for the
+          # package on npmjs.com, this can be removed and the OIDC token above is used instead.
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  publish-mcp:
+    needs: publish-npm
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write   # GitHub OIDC for MCP Registry auth (io.github.SemanticDataCharter/*)
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install mcp-publisher
+        run: |
+          curl -L "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').tar.gz" | tar xz mcp-publisher
+
+      - name: Authenticate to MCP Registry (GitHub OIDC)
+        run: ./mcp-publisher login github-oidc
+
+      - name: Publish to MCP Registry
+        run: |
+          # Retry: npm can take a moment to expose the new version for ownership validation.
+          for attempt in 1 2 3 4 5; do
+            if ./mcp-publisher publish; then
+              echo "Published to the MCP registry."
+              exit 0
+            fi
+            echo "Attempt $attempt failed (npm may still be propagating); retrying in 30s..."
+            sleep 30
+          done
+          echo "::error::mcp-publisher publish failed after 5 attempts." >&2
+          exit 1

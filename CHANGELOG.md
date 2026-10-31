@@ -10,6 +10,9 @@
   length, range, pattern and assertion cases 4.6.3 added. CI runs that release's suite, pinned by tag.
 - ExceptionalValue codes as sdcvalidator 4.6.3 maps them: `OTH` for enumerations, `INV` for every other
   facet, fixed values and assertions, `NA` for stray character data.
+- **An MCP server** (`npx sdcvalidator-ts mcp`): `validate_instance`, `validate_and_report`,
+  `recover_instance` and `check_schema_compliance`, over JSON-RPC 2.0 on stdio, as sdcvalidator's
+  own server is built. Registered as `io.github.SemanticDataCharter/sdcvalidator-ts`.
 - Runs in Node, Deno and browsers: the same results in Node 24, Deno (Supabase Edge Runtime 1.77.8)
   and Chromium 152 (checked 2026-10-31; CI runs the suite on Node 20, 22 and 24).
 
