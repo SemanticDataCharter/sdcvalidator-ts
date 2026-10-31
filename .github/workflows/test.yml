@@ -8,9 +8,8 @@ on:
     branches: [main, dev]
 
 env:
-  # The conformance suite lives in sdcvalidator (conformance/). Until SemanticDataCharter/sdcvalidator#20
-  # merges, it is on that PR's branch; then this becomes dev.
-  SUITE_REF: feature/conformance-suite
+  # The conformance suite lives in sdcvalidator (conformance/), on its integration branch.
+  SUITE_REF: dev
 
 jobs:
   test:
