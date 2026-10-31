@@ -8,8 +8,10 @@ on:
     branches: [main, dev]
 
 env:
-  # The conformance suite lives in sdcvalidator (conformance/), on its integration branch.
-  SUITE_REF: dev
+  # The conformance suite of the sdcvalidator release this library conforms to (conformance/ in that
+  # repository). Pinned to a release tag so the reference is fixed and published; moving to a newer
+  # release is a deliberate change, made with the CHANGELOG and README.
+  SUITE_REF: v4.6.2
 
 jobs:
   test:
