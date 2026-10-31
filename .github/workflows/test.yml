@@ -1,0 +1,50 @@
+name: Tests
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    # dev is the persistent integration branch, so PRs land there first.
+    branches: [main, dev]
+
+env:
+  # The conformance suite lives in sdcvalidator (conformance/). Until SemanticDataCharter/sdcvalidator#20
+  # merges, it is on that PR's branch; then this becomes dev.
+  SUITE_REF: feature/conformance-suite
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: ["20", "22", "24"]
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Check out the conformance suite
+        uses: actions/checkout@v7
+        with:
+          repository: SemanticDataCharter/sdcvalidator
+          ref: ${{ env.SUITE_REF }}
+          path: sdcvalidator
+          sparse-checkout: conformance
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Conformance suite
+        run: npm test
+        env:
+          CONFORMANCE_DIR: ${{ github.workspace }}/sdcvalidator/conformance
+
+      - name: Build
+        run: npm run build
