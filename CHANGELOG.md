@@ -1,5 +1,25 @@
 # Changelog
 
+## [4.1.0] - 2026-11-01
+
+### Added
+
+- **The schema reader is exported**, for tools that generate from a published model (the governed
+  data kits): `Schema`, its types (`ElementDecl`, `Particle`, `ComplexType`, `SimpleType`, `Facets`,
+  `Assertion`, `TypeDef`), `xsdRegex`, and the XML helpers `childElements`, `clarkName`, `SDC4_NS`
+  and `XSD_NS`. It is the same reader the validator uses, so a generator and the validator read a
+  model alike.
+- `ComplexType.appinfo`: the content of a type's own `xsd:annotation/xsd:appinfo`. In an SDC4 model
+  that is the component's `rdf:Description`: its label, its reference-model type and its semantic
+  links.
+- `ComplexType.base`: the type a derivation restricts or extends, as a Clark name.
+- Tests: every component of the eight conformance-suite models carries its annotation and label and
+  restricts a reference-model type (adapters, structural wrappers, carry no description).
+
+### Unchanged
+
+- Validation and recovery: all 151 conformance cases give the same results.
+
 ## [4.0.1] - 2026-11-01
 
 ### Fixed

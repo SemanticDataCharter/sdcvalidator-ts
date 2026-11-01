@@ -12,11 +12,12 @@ import { Document, parseXml, serializeXml } from './xml.js';
 
 export { EXCEPTIONAL_VALUES, findByPath, StructuralValidationError } from './recover.js';
 export type { Recovery, RecoveryResult } from './recover.js';
-export { UnsupportedSchemaError } from './schema.js';
-export type { SchemaSource } from './schema.js';
+export { Schema, UnsupportedSchemaError, xsdRegex } from './schema.js';
+export type { Assertion, ComplexType, ElementDecl, Facets, Particle, SchemaSource, SimpleType, TypeDef } from './schema.js';
 export { STRUCTURAL_ELEMENTS } from './validate.js';
 export type { ErrorKind, SdcError } from './validate.js';
-export { parseXml, serializeXml, XmlParseError } from './xml.js';
+export { childElements, clarkName, parseXml, serializeXml, SDC4_NS, XmlParseError, XSD_NS } from './xml.js';
+export type { Document, Element } from './xml.js';
 
 export interface ValidationResult {
   valid: boolean;
