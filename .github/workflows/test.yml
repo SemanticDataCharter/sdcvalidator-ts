@@ -1,0 +1,51 @@
+name: Tests
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    # dev is the persistent integration branch, so PRs land there first.
+    branches: [main, dev]
+
+env:
+  # The conformance suite of the sdcvalidator release this library conforms to (conformance/ in that
+  # repository). Pinned to a release tag so the reference is fixed and published; moving to a newer
+  # release is a deliberate change, made with the CHANGELOG and README.
+  SUITE_REF: v4.6.3
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: ["20", "22", "24"]
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Check out the conformance suite
+        uses: actions/checkout@v7
+        with:
+          repository: SemanticDataCharter/sdcvalidator
+          ref: ${{ env.SUITE_REF }}
+          path: sdcvalidator
+          sparse-checkout: conformance
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Conformance suite
+        run: npm test
+        env:
+          CONFORMANCE_DIR: ${{ github.workspace }}/sdcvalidator/conformance
+
+      - name: Build
+        run: npm run build

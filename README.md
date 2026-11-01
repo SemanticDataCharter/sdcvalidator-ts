@@ -5,6 +5,10 @@ and recovers semantic errors with ISO 21090 ExceptionalValues, giving the same r
 [sdcvalidator](https://github.com/SemanticDataCharter/sdcvalidator), the reference implementation,
 on its conformance suite.
 
+**Conforms to:** sdcvalidator **4.6.3** (all 151 cases of
+[its conformance suite](https://github.com/SemanticDataCharter/sdcvalidator/tree/v4.6.3/conformance)).
+CI runs that release's suite, pinned by tag.
+
 It runs in Node (20 or later), Deno (including Supabase Edge Functions) and browsers. You supply the
 model and record text, so it reads no files and makes no network requests.
 
@@ -24,9 +28,31 @@ const recovered = validator.recover(recordXml);
 // Throws StructuralValidationError if the record has structural errors.
 ```
 
+## MCP server
+
+The package includes an MCP server, so agents can call it directly. It speaks JSON-RPC 2.0 over stdio and runs on Node; it reads the files you name.
+
+```bash
+npx sdcvalidator-ts mcp
+```
+
+| Tool | What it does |
+|---|---|
+| `validate_instance` | Pass or fail, with error counts |
+| `validate_and_report` | Every error: path, tier, the constraint that failed, the ExceptionalValue code |
+| `recover_instance` | The recovered record and each value covered; a structural error rejects it |
+| `check_schema_compliance` | Whether a schema follows SDC4 principles: restriction, never extension |
+
+Each tool takes `schema_path` and `instance_path` (except the compliance check, which takes only the
+schema), plus an optional `reference_path`. The model's `xsd:include` of the reference model is
+fetched from its URL once and cached. With `reference_path`, it is read from that local copy instead,
+so the server works offline.
+
+It is registered in the MCP registry as `io.github.SemanticDataCharter/sdcvalidator-ts`.
+
 ## What "the same results" means
 
-The [conformance suite](https://github.com/SemanticDataCharter/sdcvalidator/tree/dev/conformance)
+The [conformance suite](https://github.com/SemanticDataCharter/sdcvalidator/tree/v4.6.3/conformance)
 compares, for every case:
 - the verdict;
 - structural and semantic errors by path;
@@ -37,9 +63,11 @@ compares, for every case:
 Error messages are not compared. Errors are classified by the constraint that failed, never by
 message wording.
 
-The ExceptionalValue mapping follows the reference as the suite records it today:
-- **`INV`:** a value that is not lexically of its type.
-- **`NI`:** every facet, fixed-value and assertion failure.
+The ExceptionalValue codes are the reference's (sdcvalidator 4.6.3):
+- **`OTH`:** a value outside its enumeration.
+- **`INV`:** a value that is not of its type, or that breaks any other facet (pattern, length, range,
+  digits, a built-in type's own range), a fixed value or an assertion.
+- **`NA`:** character data where only elements are allowed.
 - **No code:** an error on a structural element (`label`, `vtb`, `vte`, ...). It cannot be recovered.
 
 When sdcvalidator's mapping changes, the suite's expectations change, and this library follows before
