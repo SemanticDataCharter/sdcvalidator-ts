@@ -14,3 +14,8 @@ test('package.json, the MCP server and server.json carry one version', () => {
   assert.ok(server.packages.every((p: { version: string }) => p.version === pkg.version));
   assert.equal(pkg.mcpName, server.name);
 });
+
+test('server.json passes the MCP registry\'s length limit', () => {
+  // The registry rejects a description over 100 characters (422), after npm has already published.
+  assert.ok(read('server.json').description.length <= 100);
+});
