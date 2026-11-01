@@ -1,6 +1,6 @@
 {
   "name": "sdcvalidator-ts",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "SDC4 validation in TypeScript: validates Governed Data Records against their published SDC4 models, with ExceptionalValue recovery. Conforms to sdcvalidator's conformance suite.",
   "mcpName": "io.github.SemanticDataCharter/sdcvalidator-ts",
   "license": "Apache-2.0",

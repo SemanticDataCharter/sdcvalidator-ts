@@ -17,7 +17,7 @@ import { SDC4Validator, StructuralValidationError } from './index.js';
 import { childElements, parseXml, XSD_NS } from './xml.js';
 
 export const SERVER_NAME = 'sdcvalidator-ts';
-export const SERVER_VERSION = '4.0.0';
+export const SERVER_VERSION = '4.0.1';
 const PROTOCOL_VERSION = '2024-11-05';
 
 type Args = Record<string, unknown>;
