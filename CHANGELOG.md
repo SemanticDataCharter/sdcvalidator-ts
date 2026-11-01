@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+
+- `server.json`'s description fits the MCP registry's 100-character limit, so 4.0.0 can be
+  registered; a test now checks the limit before a tag publishes. A manual `MCP registry` workflow
+  publishes `server.json` for a version already on npm.
+
 ## [4.0.0] - 2026-11-01
 
 ### Added
