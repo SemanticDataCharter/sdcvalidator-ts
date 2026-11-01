@@ -6,13 +6,13 @@
     "url": "https://github.com/SemanticDataCharter/sdcvalidator-ts",
     "source": "github"
   },
-  "version": "4.0.0",
+  "version": "4.0.1",
   "packages": [
     {
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "sdcvalidator-ts",
-      "version": "4.0.0",
+      "version": "4.0.1",
       "runtimeHint": "npx",
       "transport": {
         "type": "stdio"

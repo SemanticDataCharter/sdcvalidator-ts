@@ -46,7 +46,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: npm
     permissions:
-      id-token: write   # npm provenance (and trusted publishing once configured on npmjs.com)
+      id-token: write   # npm trusted publishing and provenance
       contents: read
     steps:
       - uses: actions/checkout@v7
@@ -60,11 +60,10 @@ jobs:
       - run: npm run build
 
       - name: Publish to npm
+        # Trusted publishing: npm exchanges the OIDC token above for a publish credential, so no
+        # npm token is stored. The trusted publisher on npmjs.com names this repo, release.yml and
+        # the npm environment.
         run: npm publish --provenance --access public
-        env:
-          # A granular token for the first publish; once trusted publishing is configured for the
-          # package on npmjs.com, this can be removed and the OIDC token above is used instead.
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   publish-mcp:
     needs: publish-npm
