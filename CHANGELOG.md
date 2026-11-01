@@ -8,6 +8,10 @@
   registered; a test now checks the limit before a tag publishes. A manual `MCP registry` workflow
   publishes `server.json` for a version already on npm.
 
+### Changed
+
+- Releases publish to npm through trusted publishing (GitHub OIDC); no npm token is stored.
+
 ## [4.0.0] - 2026-11-01
 
 ### Added
