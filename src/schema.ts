@@ -48,6 +48,10 @@ export interface Assertion {
 export interface ComplexType {
   kind: 'complex';
   name?: string;
+  /** The base type a complexContent or simpleContent derivation names, as a Clark name. */
+  base?: string;
+  /** The content of the type's own xsd:annotation/xsd:appinfo (in SDC4 models, the component's rdf:Description). */
+  appinfo: Element[];
   /** The element content model, or null for empty or simple content. */
   content: Particle | null;
   simple?: SimpleType;
@@ -71,7 +75,7 @@ export type Particle =
   | { kind: 'element'; decl: ElementDecl; min: number; max: number }
   | { kind: 'sequence' | 'choice'; items: Particle[]; min: number; max: number };
 
-const ANY_TYPE: ComplexType = { kind: 'complex', name: 'anyType', content: null, mixed: true, asserts: [] };
+const ANY_TYPE: ComplexType = { kind: 'complex', name: 'anyType', appinfo: [], content: null, mixed: true, asserts: [] };
 
 /** Translate an XSD regular expression into a JavaScript one, anchored as XSD patterns implicitly are. */
 export function xsdRegex(pattern: string): RegExp {
@@ -300,12 +304,15 @@ export class Schema {
 
   private complexTypeFromNode(node: Element): ComplexType {
     const name = node.getAttribute('name') ?? undefined;
-    const type: ComplexType = { kind: 'complex', name, content: null, mixed: node.getAttribute('mixed') === 'true', asserts: [] };
+    const type: ComplexType = { kind: 'complex', name, appinfo: [], content: null, mixed: node.getAttribute('mixed') === 'true', asserts: [] };
     // Cache before resolving bases, so recursive references terminate.
     this.typeCache.set(node, type);
     for (const child of childElements(node)) {
       switch (child.localName) {
-        case 'annotation': case 'attribute': case 'anyAttribute': break;
+        case 'annotation':
+          for (const appinfo of childElements(child)) if (appinfo.localName === 'appinfo') type.appinfo.push(...childElements(appinfo));
+          break;
+        case 'attribute': case 'anyAttribute': break;
         case 'sequence': case 'choice': type.content = this.particle(child); break;
         case 'assert': type.asserts.push(this.assertion(child)); break;
         case 'complexContent': this.derive(type, child, false); break;
@@ -320,7 +327,8 @@ export class Schema {
     if (contentNode.getAttribute('mixed') === 'true') type.mixed = true;
     const derivation = childElements(contentNode).find((c) => c.localName === 'restriction' || c.localName === 'extension');
     if (!derivation) throw new UnsupportedSchemaError('complex content without restriction or extension');
-    const base = this.typeByName(this.resolveQName(derivation.getAttribute('base')!, derivation));
+    type.base = this.resolveQName(derivation.getAttribute('base')!, derivation);
+    const base = this.typeByName(type.base);
     // XSD 1.1: a derived type's assertions include its base type's.
     if (base.kind === 'complex') type.asserts.push(...base.asserts);
     let own: Particle | null = null;
