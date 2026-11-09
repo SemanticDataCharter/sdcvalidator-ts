@@ -1,15 +1,6 @@
 # Changelog
 
-## [Unreleased]
-
-### Changed
-
-- A release skips the npm publish for a version already on npm, so a failed release can be re-run
-  and still reach the MCP registry.
-- Before registering with the MCP registry, a release waits up to 10 minutes for npm to serve the
-  new version, rather than giving up after 2.5.
-
-## [4.1.0] - 2026-11-01
+## [4.1.0] - 2026-11-09
 
 ### Added
 
@@ -24,6 +15,13 @@
 - `ComplexType.base`: the type a derivation restricts or extends, as a Clark name.
 - Tests: every component of the eight conformance-suite models carries its annotation and label and
   restricts a reference-model type (adapters, structural wrappers, carry no description).
+
+### Changed
+
+- A release skips the npm publish for a version already on npm, so a failed release can be re-run
+  and still reach the MCP registry.
+- Before registering with the MCP registry, a release waits up to 10 minutes for npm to serve the
+  new version, rather than giving up after 2.5.
 
 ### Unchanged
 
