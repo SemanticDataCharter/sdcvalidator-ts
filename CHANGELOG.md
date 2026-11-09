@@ -1,5 +1,12 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+
+- A release skips the npm publish for a version already on npm, so a failed release can be re-run
+  and still reach the MCP registry.
+
 ## [4.1.0] - 2026-11-01
 
 ### Added
