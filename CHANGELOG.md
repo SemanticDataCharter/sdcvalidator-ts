@@ -1,5 +1,32 @@
 # Changelog
 
+## [4.1.0] - 2026-11-09
+
+### Added
+
+- **The schema reader is exported**, for tools that generate from a published model (the governed
+  data kits): `Schema`, its types (`ElementDecl`, `Particle`, `ComplexType`, `SimpleType`, `Facets`,
+  `Assertion`, `TypeDef`), `xsdRegex`, and the XML helpers `childElements`, `clarkName`, `SDC4_NS`
+  and `XSD_NS`. It is the same reader the validator uses, so a generator and the validator read a
+  model alike.
+- `ComplexType.appinfo`: the content of a type's own `xsd:annotation/xsd:appinfo`. In an SDC4 model
+  that is the component's `rdf:Description`: its label, its reference-model type and its semantic
+  links.
+- `ComplexType.base`: the type a derivation restricts or extends, as a Clark name.
+- Tests: every component of the eight conformance-suite models carries its annotation and label and
+  restricts a reference-model type (adapters, structural wrappers, carry no description).
+
+### Changed
+
+- A release skips the npm publish for a version already on npm, so a failed release can be re-run
+  and still reach the MCP registry.
+- Before registering with the MCP registry, a release waits up to 10 minutes for npm to serve the
+  new version, rather than giving up after 2.5.
+
+### Unchanged
+
+- Validation and recovery: all 151 conformance cases give the same results.
+
 ## [4.0.1] - 2026-11-01
 
 ### Fixed

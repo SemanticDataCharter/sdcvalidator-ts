@@ -87,6 +87,20 @@ A construct outside the subset raises `UnsupportedSchemaError` naming it. It is 
 
 DOCTYPE and entity declarations are refused before parsing, so no external entity is ever resolved.
 
+## Reading a model
+
+The schema reader the validator uses is exported, for tools that generate from a published model:
+
+```ts
+import { Schema, SDC4_NS } from 'sdcvalidator-ts';
+
+const schema = new Schema({ text: modelXsd, resolve: () => sdc4Xsd });
+const root = schema.element(`{${SDC4_NS}}dm-${ctId}`);
+// root.type().content: the model's particles, each with its element, minOccurs and maxOccurs.
+// A component's ComplexType carries `base` (the reference-model type it restricts) and `appinfo`
+// (its rdf:Description: label, semantic links).
+```
+
 ## Development
 
 ```bash
