@@ -50,6 +50,8 @@ so the server works offline.
 
 It is registered in the MCP registry as `io.github.SemanticDataCharter/sdcvalidator-ts`.
 
+Also listed on [mcprush](https://mcprush.com/semanticdatacharter/sdcvalidator-ts-mcp).
+
 ## What "the same results" means
 
 The [conformance suite](https://github.com/SemanticDataCharter/sdcvalidator/tree/v4.6.3/conformance)
